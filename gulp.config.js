@@ -4,7 +4,7 @@ module.exports = function () {
 
     var config = {
 
-        tmp: './.tmp',
+        tmp: './.tmp/',
 
         // all js to vet
         alljs: [
