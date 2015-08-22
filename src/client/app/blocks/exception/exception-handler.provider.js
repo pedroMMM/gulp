@@ -10,7 +10,7 @@
 
     /**
      * Must configure the exception handling
-     * @return {[type]}
+     * @return {Object}
      */
     function exceptionHandlerProvider() {
         /* jshint validthis:true */
@@ -31,10 +31,10 @@
     /**
      * Configure by setting an optional string value for appErrorPrefix.
      * Accessible via config.appErrorPrefix (via config value).
-     * @param  {[type]} $provide
-     * @return {[type]}
-     * @ngInject
+     * @param  {Object} $provide
+     * @return {Object}
      */
+    /* @ngInject */
     function config($provide) {
         $provide.decorator('$exceptionHandler', extendExceptionHandler);
     }

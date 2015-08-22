@@ -1,5 +1,6 @@
 /* jshint -W117, -W030 */
 /* jshint multistr:true */
+/* jscs:disable disallowMultipleLineStrings */
 describe('htSidebar directive: ', function () {
     var dropdownElement;
     var el;
