@@ -3,6 +3,7 @@ var args = require('yargs').argv;
 var config = require('./gulp.config')();
 var del = require('del');
 var wiredep = require('wiredep').stream;
+var port = process.env.PORT || config.defaultPort;
 var $ = require('gulp-load-plugins')({
     lazy: true
 });
@@ -61,6 +62,22 @@ gulp.task('inject', ['wiredep', 'styles'], function () {
         .pipe($.plumber())
         .pipe($.inject(gulp.src(config.css)))
         .pipe(gulp.dest(config.client));
+});
+
+gulp.task('serve-dev', ['inject'], function () {
+    var isDev = true;
+
+    var nodeOptions = {
+        script: config.nodeServer,
+        delayTime: 1,
+        env: {
+            'PORT': port,
+            'NODE_ENV': isDev ? 'dev' : 'build'
+        },
+        watch: [config.server]
+    };
+
+    return $.nodemon(nodeOptions);
 });
 
 /*

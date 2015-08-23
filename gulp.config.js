@@ -4,9 +4,15 @@ module.exports = function () {
 
     var clientApp = client + 'app/';
 
+    var server = './src/server/';
+
     var tmp = './.tmp/';
 
     var config = {
+
+        /*
+        File Paths
+        */
 
         tmp: tmp,
 
@@ -32,11 +38,25 @@ module.exports = function () {
 
         index: client + 'index.html',
 
+        server: server,
+
+        /*
+        Bower and Node paths
+        */
+
         bower: {
             json: require('./bower.json'),
             directory: ('./bower_components/'),
             ignorePath: '../..'
-        }
+        },
+
+        /*
+        Node settings
+        */
+
+        defaultPort: 7203,
+        nodeServer: server + 'app.js'
+
     };
 
     config.getDefaultWiredepOptions = function () {
