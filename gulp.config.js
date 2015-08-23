@@ -2,6 +2,8 @@ module.exports = function () {
 
     var client = './src/client/';
 
+    var clientApp = client + 'app/';
+
     var config = {
 
         tmp: './.tmp/',
@@ -12,7 +14,32 @@ module.exports = function () {
             './*.js'
         ],
 
-        less: [client + 'styles/styles.less']
+        js: [
+            clientApp + '**/*module.js',
+            clientApp + '**/*.js',
+            '!' + clientApp + '**/*.spec.js'
+        ],
+
+        client: client,
+
+        less: [client + 'styles/styles.less'],
+
+        index: client + 'index.html',
+
+        bower: {
+            json: require('./bower.json'),
+            directory: ('./bower_components/'),
+            ignorePath: '../..'
+        }
+    };
+
+    config.getDefaultWiredepOptions = function () {
+        var options = {
+            bowerJson: config.bower.json,
+            directory: config.bower.directory,
+            ignorePath: config.bower.ignorePath
+        };
+        return options;
     };
 
     return config;
