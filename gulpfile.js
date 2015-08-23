@@ -12,6 +12,7 @@ gulp.task('vet', function () {
     log('Analyzing source with JSHint and JSCS');
     return gulp
         .src(config.alljs)
+        .pipe($.plumber())
         .pipe($.if(args.verbose, $.print()))
         .pipe($.jscs())
         .pipe($.jshint())
@@ -77,7 +78,20 @@ gulp.task('serve-dev', ['inject'], function () {
         watch: [config.server]
     };
 
-    return $.nodemon(nodeOptions);
+    return $.nodemon(nodeOptions)
+        .on('restart', function (ev) {
+            log('*** nodemon restarted');
+            log('files changed on restart:\n' + ev);
+        })
+        .on('start', function () {
+            log('*** nodemon started');
+        })
+        .on('crash', function () {
+            log('*** nodemon crached');
+        })
+        .on('exit', function () {
+            log('*** nodemon exited cleanly');
+        });
 });
 
 /*
