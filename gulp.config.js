@@ -6,7 +6,7 @@ module.exports = function () {
 
     var server = './src/server/';
 
-    var tmp = './.tmp/';
+    var tmp = './tmp/';
 
     var config = {
 
@@ -30,7 +30,7 @@ module.exports = function () {
 
         client: client,
 
-        less: [client + 'styles/styles.less'],
+        less: client + 'styles/styles.less',
 
         css: [
             tmp + 'styles.css'

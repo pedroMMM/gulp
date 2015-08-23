@@ -100,16 +100,31 @@ gulp.task('serve-dev', ['inject'], function () {
  * Generic methods
  */
 
+function changeEvent(event) {
+    var srcPattern = new RegExp('/.*(?=/' + config.source + ')/');
+    log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
+}
+
 function startBrowserSync() {
     if (browserSync.active) {
         return;
     }
     log('Starting browser-sync on port ' + port);
 
+    gulp.watch(config.less, ['styles'])
+        .on('change', function (event) {
+            changeEvent(event);
+        });
+
     var options = {
         proxy: 'localhost:' + port,
         port: 3000,
-        files: [config.client + '**/*.*'],
+        files: [
+            config.client + '**/*.*',
+            '!**/*.less',
+            /* I had to remove ./ from the path because browser-sync */
+            config.tmp + '**/*.css'
+        ],
         ghostMode: {
             clicks: true,
             location: false,
@@ -121,8 +136,9 @@ function startBrowserSync() {
         logLevel: 'debug',
         logPrefix: 'gulp-patterns',
         notify: true,
-        reloadDelay: 1000
-
+        reloadDelay: 1000,
+        browser: 'chrome',
+        open: false
     };
 
     browserSync(options);
