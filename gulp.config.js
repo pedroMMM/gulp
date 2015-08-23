@@ -4,9 +4,11 @@ module.exports = function () {
 
     var clientApp = client + 'app/';
 
+    var tmp = './.tmp/';
+
     var config = {
 
-        tmp: './.tmp/',
+        tmp: tmp,
 
         // all js to vet
         alljs: [
@@ -23,6 +25,10 @@ module.exports = function () {
         client: client,
 
         less: [client + 'styles/styles.less'],
+
+        css: [
+            tmp + 'styles.css'
+        ],
 
         index: client + 'index.html',
 
