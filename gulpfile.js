@@ -80,7 +80,7 @@ gulp.task('wiredep', function () {
 });
 
 gulp.task('inject', ['wiredep', 'styles'], function () {
-    log('Wire up our css into the html, and call wiredep');
+    log('Wire up our css into the html and call wiredep');
 
     return gulp
         .src(config.index)
@@ -179,7 +179,9 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('templatecache', ['clean-templatecache'], function () {
-    log('Creating AngularJS $templateCache');
+    log('Creating AngularJS $templateCache and inject it into the html');
+
+    var templateCache = config.tmp + config.templateCache.file;
 
     return gulp
         .src(config.htmltemplates)
@@ -191,7 +193,12 @@ gulp.task('templatecache', ['clean-templatecache'], function () {
             config.templateCache.file,
             config.templateCache.options
         ))
-        .pipe(gulp.dest(config.tmp))
+        .pipe($.inject(gulp.src(templateCache, {
+            read: false
+        }), {
+            starttag: '<!--    inject:templates:js   -->'
+        }))
+        .pipe(gulp.dest(config.tmp));
 });
 
 gulp.task('clean-templatecache', function (cb) {
@@ -199,6 +206,15 @@ gulp.task('clean-templatecache', function (cb) {
 
     var files = [config.tmp + config.templateCache.file];
     clean(files, cb);
+});
+
+gulp.task('optimize', ['inject', 'templatecache'], function () {
+    log('Optimizing the js, css and html');
+
+    return gulp
+        .src(config.index)
+        .pipe($.plumber())
+        .pipe(gulp.dest(config.build));
 });
 
 /*
