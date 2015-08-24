@@ -36,6 +36,8 @@ module.exports = function () {
 
         fonts: './bower_components/font-awesome/fonts/**/*.*',
 
+        images: client + 'images/**/*.*',
+
         less: client + 'styles/styles.less',
 
         allless: '**/*.less',

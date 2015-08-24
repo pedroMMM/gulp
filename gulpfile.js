@@ -136,7 +136,34 @@ gulp.task('fonts', ['clean-fonts'], function () {
 
 gulp.task('clean-fonts', function (cb) {
     log('Cleaing fonts folder');
+
     var files = [config.build + 'fonts/'];
+    clean(files, cb);
+});
+
+gulp.task('images', ['clean-images'], function () {
+    log('Copying and compressing images');
+
+    return gulp
+        .src(config.images)
+        .pipe($.plumber())
+        .pipe($.imagemin({
+            optimizationLevel: 4
+        }))
+        .pipe(gulp.dest(config.build + 'images'));
+});
+
+gulp.task('clean-images', function (cb) {
+    log('Cleaing images folder');
+
+    var files = [config.build + 'images/'];
+    clean(files, cb);
+});
+
+gulp.task('clean', function (cb) {
+    log('Cleaing build and tmp folders');
+
+    var files = [].concat(config.build, config.tmp);
     clean(files, cb);
 });
 
