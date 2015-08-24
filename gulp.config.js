@@ -59,7 +59,10 @@ module.exports = function () {
         */
 
         defaultPort: 7203,
-        nodeServer: server + 'app.js'
+
+        nodeServer: server + 'app.js',
+
+        browserReloadDelay: 1000
 
     };
 
