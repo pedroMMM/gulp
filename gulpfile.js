@@ -155,8 +155,8 @@ function startBrowserSync() {
         logPrefix: 'gulp-patterns',
         notify: true,
         reloadDelay: 1000,
-        browser: 'chrome',
-        open: false
+        browser: ['chrome', 'google chrome'],
+        open: true
     };
 
     browserSync(options);
