@@ -211,9 +211,16 @@ gulp.task('clean-templatecache', function (cb) {
 gulp.task('optimize', ['inject', 'templatecache'], function () {
     log('Optimizing the js, css and html');
 
+    var assets = $.useref.assets({
+        searchPath: './'
+    });
+
     return gulp
         .src(config.index)
         .pipe($.plumber())
+        .pipe(assets)
+        .pipe(assets.restore())
+        .pipe($.useref())
         .pipe(gulp.dest(config.build));
 });
 
