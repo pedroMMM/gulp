@@ -50,6 +50,8 @@ module.exports = function () {
 
         server: server,
 
+        htmltemplates: clientApp + '**/*.html',
+
         /*
         Bower and Node paths
         */
@@ -68,7 +70,19 @@ module.exports = function () {
 
         nodeServer: server + 'app.js',
 
-        browserReloadDelay: 1000
+        browserReloadDelay: 1000,
+
+        /*
+        template cache
+        */
+        templateCache: {
+            file: 'templates.js',
+            options: {
+                module: 'app.core',
+                strandAlone: false,
+                root: 'app/'
+            }
+        }
 
     };
 

@@ -160,10 +160,44 @@ gulp.task('clean-images', function (cb) {
     clean(files, cb);
 });
 
+gulp.task('clean-code', function (cb) {
+    log('Cleaing code from build and tmp folders');
+
+    var files = [].concat(
+        config.build + '**/*.html',
+        config.build + 'js/**/*.js',
+        config.tmp + '**/*.js'
+    );
+    clean(files, cb);
+});
+
 gulp.task('clean', function (cb) {
     log('Cleaing build and tmp folders');
 
     var files = [].concat(config.build, config.tmp);
+    clean(files, cb);
+});
+
+gulp.task('templatecache', ['clean-templatecache'], function () {
+    log('Creating AngularJS $templateCache');
+
+    return gulp
+        .src(config.htmltemplates)
+        .pipe($.plumber())
+        .pipe($.minifyHtml({
+            empty: true
+        }))
+        .pipe($.angularTemplatecache(
+            config.templateCache.file,
+            config.templateCache.options
+        ))
+        .pipe(gulp.dest(config.tmp))
+});
+
+gulp.task('clean-templatecache', function (cb) {
+    log('Cleaing template cache file');
+
+    var files = [config.tmp + config.templateCache.file];
     clean(files, cb);
 });
 
