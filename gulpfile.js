@@ -53,6 +53,7 @@ gulp.task('styles-browser-sync', ['clean-styles'], function () {
 });
 
 gulp.task('clean-styles', function (cb) {
+    log('Cleaing styles');
     var files = [config.tmp + '**/*.css'];
     clean(files, cb);
 });
@@ -122,6 +123,21 @@ gulp.task('serve-dev', ['inject'], function () {
         .on('exit', function () {
             log('*** nodemon exited cleanly');
         });
+});
+
+gulp.task('fonts', ['clean-fonts'], function () {
+    log('Copying fonts');
+
+    return gulp
+        .src(config.fonts)
+        .pipe($.plumber())
+        .pipe(gulp.dest(config.build + 'fonts'));
+});
+
+gulp.task('clean-fonts', function (cb) {
+    log('Cleaing fonts folder');
+    var files = [config.build + 'fonts/'];
+    clean(files, cb);
 });
 
 /*

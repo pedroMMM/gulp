@@ -28,9 +28,13 @@ module.exports = function () {
             '!' + clientApp + '**/*.spec.js'
         ],
 
+        build: './build/',
+
         client: client,
 
         allclient: client + '**/*.*',
+
+        fonts: './bower_components/font-awesome/fonts/**/*.*',
 
         less: client + 'styles/styles.less',
 
