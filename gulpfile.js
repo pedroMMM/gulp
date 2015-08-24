@@ -35,13 +35,31 @@ gulp.task('styles', ['clean-styles'], function () {
         .pipe(gulp.dest(config.tmp));
 });
 
+gulp.task('styles-browser-sync', ['clean-styles'], function () {
+    log('Compileing less --> CSS');
+    return gulp
+        .src(config.less)
+        .pipe($.plumber())
+        .pipe($.less())
+        .pipe($.autoprefixer({
+            browsers: ['> 2%']
+        }))
+        .pipe(gulp.dest(config.tmp))
+        .pipe(browserSync.stream());
+});
+
 gulp.task('clean-styles', function (cb) {
     var files = [config.tmp + '**/*.css'];
     clean(files, cb);
 });
 
 gulp.task('less-watcher', function () {
-    gulp.watch(config.less, ['styles']);
+    //    gulp.watch(config.less, ['styles']);
+
+    gulp.watch(config.less, ['styles'])
+        .on('change', function (event) {
+            changeEvent(event);
+        });
 });
 
 gulp.task('wiredep', function () {
@@ -111,7 +129,7 @@ function startBrowserSync() {
     }
     log('Starting browser-sync on port ' + port);
 
-    gulp.watch(config.less, ['styles'])
+    gulp.watch(config.less, ['styles-browser-sync'])
         .on('change', function (event) {
             changeEvent(event);
         });
@@ -120,10 +138,10 @@ function startBrowserSync() {
         proxy: 'localhost:' + port,
         port: 3000,
         files: [
-            config.client + '**/*.*',
-            '!**/*.less',
+            config.allclient,
+            '!' + config.allless,
+            '!' + config.allcss
             /* I had to remove ./ from the path because browser-sync */
-            config.tmp + '**/*.css'
         ],
         ghostMode: {
             clicks: true,

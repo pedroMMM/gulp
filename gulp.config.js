@@ -30,11 +30,15 @@ module.exports = function () {
 
         client: client,
 
+        allclient: client + '**/*.*',
+
         less: client + 'styles/styles.less',
 
-        css: [
-            tmp + 'styles.css'
-        ],
+        allless: '**/*.less',
+
+        css: tmp + 'styles.css',
+
+        allcss: '**/*.css',
 
         index: client + 'index.html',
 
