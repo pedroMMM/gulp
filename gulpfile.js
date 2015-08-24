@@ -90,39 +90,11 @@ gulp.task('inject', ['wiredep', 'styles'], function () {
 });
 
 gulp.task('serve-dev', ['inject'], function () {
-    var isDev = true;
+    serve(true);
+});
 
-    var nodeOptions = {
-        script: config.nodeServer,
-        delayTime: 1,
-        env: {
-            'PORT': port,
-            'NODE_ENV': isDev ? 'dev' : 'build'
-        },
-        watch: [config.server]
-    };
-
-    return $.nodemon(nodeOptions)
-        .on('restart', function (ev) {
-            log('*** nodemon restarted');
-            log('files changed on restart:\n' + ev);
-            setTimeout(function () {
-                browserSync.notify('Realoading now ...');
-                browserSync.reload({
-                    stream: false
-                });
-            }, config.browserReloadDelay);
-        })
-        .on('start', function () {
-            log('*** nodemon started');
-            startBrowserSync();
-        })
-        .on('crash', function () {
-            log('*** nodemon crached');
-        })
-        .on('exit', function () {
-            log('*** nodemon exited cleanly');
-        });
+gulp.task('serve-build', ['optimize'], function () {
+    serve(false);
 });
 
 gulp.task('fonts', ['clean-fonts'], function () {
@@ -181,7 +153,7 @@ gulp.task('clean', function (cb) {
 gulp.task('templatecache', ['clean-templatecache'], function () {
     log('Creating AngularJS $templateCache and inject it into the html');
 
-    var templateCache = config.tmp + config.templateCache.file;
+
 
     return gulp
         .src(config.htmltemplates)
@@ -193,11 +165,6 @@ gulp.task('templatecache', ['clean-templatecache'], function () {
             config.templateCache.file,
             config.templateCache.options
         ))
-        .pipe($.inject(gulp.src(templateCache, {
-            read: false
-        }), {
-            starttag: '<!--    inject:templates:js   -->'
-        }))
         .pipe(gulp.dest(config.tmp));
 });
 
@@ -211,6 +178,8 @@ gulp.task('clean-templatecache', function (cb) {
 gulp.task('optimize', ['inject', 'templatecache'], function () {
     log('Optimizing the js, css and html');
 
+    var templateCache = config.tmp + config.templateCache.file;
+
     var assets = $.useref.assets({
         searchPath: './'
     });
@@ -218,6 +187,11 @@ gulp.task('optimize', ['inject', 'templatecache'], function () {
     return gulp
         .src(config.index)
         .pipe($.plumber())
+        .pipe($.inject(gulp.src(templateCache, {
+            read: false
+        }), {
+            starttag: '<!--    inject:templates:js   -->'
+        }))
         .pipe(assets)
         .pipe(assets.restore())
         .pipe($.useref())
@@ -228,31 +202,86 @@ gulp.task('optimize', ['inject', 'templatecache'], function () {
  * Generic methods
  */
 
+function serve(isDev) {
+
+    var nodeOptions = {
+        script: config.nodeServer,
+        delayTime: 1,
+        env: {
+            'PORT': port,
+            'NODE_ENV': isDev ? 'dev' : 'build'
+        },
+        watch: [config.server]
+    };
+
+    return $.nodemon(nodeOptions)
+        .on('restart', function (ev) {
+            log('*** nodemon restarted');
+            log('files changed on restart:\n' + ev);
+            setTimeout(function () {
+                browserSync.notify('Realoading now ...');
+                browserSync.reload({
+                    stream: false
+                });
+            }, config.browserReloadDelay);
+        })
+        .on('start', function () {
+            log('*** nodemon started');
+            startBrowserSync(isDev);
+        })
+        .on('crash', function () {
+            log('*** nodemon crached');
+        })
+        .on('exit', function () {
+            log('*** nodemon exited cleanly');
+        });
+}
+
 function changeEvent(event) {
     var srcPattern = new RegExp('/.*(?=/' + config.source + ')/');
     log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
 }
 
-function startBrowserSync() {
+function startBrowserSync(isDev) {
     if (args.nosync || browserSync.active) {
         return;
     }
+
     log('Starting browser-sync on port ' + port);
 
-    gulp.watch(config.less, ['styles-browser-sync'])
-        .on('change', function (event) {
-            changeEvent(event);
-        });
+    if (isDev) {
+        gulp.watch(config.less, ['styles-browser-sync'])
+            .on('change', function (event) {
+                changeEvent(event);
+            });
+    } else {
+
+        var watch = [
+            config.less,
+            config.js,
+            config.html
+        ];
+
+        var dependencies = [
+            'optimize',
+            browserSync.reload
+        ];
+
+        gulp.watch(watch, dependencies)
+            .on('change', function (event) {
+                changeEvent(event);
+            });
+    }
 
     var options = {
         proxy: 'localhost:' + port,
         port: 3000,
-        files: [
+        files: isDev ? [
             config.allclient,
             '!' + config.allless,
             '!' + config.allcss
             /* I had to remove ./ from the path because browser-sync */
-        ],
+        ] : [],
         ghostMode: {
             clicks: true,
             location: false,
@@ -264,7 +293,7 @@ function startBrowserSync() {
         logLevel: 'debug',
         logPrefix: 'gulp-patterns',
         notify: true,
-        reloadDelay: 1000,
+        reloadDelay: 2000,
         browser: ['chrome', 'google chrome'],
         open: true
     };

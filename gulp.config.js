@@ -50,6 +50,8 @@ module.exports = function () {
 
         server: server,
 
+        html: client + '**/*.html',
+
         htmltemplates: clientApp + '**/*.html',
 
         /*
