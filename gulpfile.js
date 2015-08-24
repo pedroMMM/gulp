@@ -9,6 +9,10 @@ var $ = require('gulp-load-plugins')({
     lazy: true
 });
 
+gulp.task('help', $.taskListing);
+
+gulp.task('default', ['help']);
+
 gulp.task('vet', function () {
     log('Analyzing source with JSHint and JSCS');
     return gulp
