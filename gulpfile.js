@@ -185,7 +185,10 @@ gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
     var cssFilter = $.filter('**/*.css', {
         restore: true
     });
-    var jsFilter = $.filter('**/*.js', {
+    var jsLibFilter = $.filter('**/' + config.optimized.lib, {
+        restore: true
+    });
+    var jsAppFilter = $.filter('**/' + config.optimized.app, {
         restore: true
     });
 
@@ -201,9 +204,13 @@ gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
         .pipe(cssFilter)
         .pipe($.csso())
         .pipe(cssFilter.restore)
-        .pipe(jsFilter)
+        .pipe(jsLibFilter)
         .pipe($.uglify())
-        .pipe(jsFilter.restore)
+        .pipe(jsLibFilter.restore)
+        .pipe(jsAppFilter)
+        .pipe($.ngAnnotate())
+        .pipe($.uglify())
+        .pipe(jsAppFilter.restore)
         .pipe(assets.restore())
         .pipe($.useref())
         .pipe(gulp.dest(config.build));

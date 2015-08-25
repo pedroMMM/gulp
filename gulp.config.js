@@ -55,6 +55,15 @@ module.exports = function () {
         htmltemplates: clientApp + '**/*.html',
 
         /*
+        Optimized files
+        */
+
+        optimized: {
+            app: 'app.js',
+            lib: 'lib.js'
+        },
+
+        /*
         Bower and Node paths
         */
 
