@@ -79,7 +79,7 @@ gulp.task('wiredep', function () {
         .pipe(gulp.dest(config.client));
 });
 
-gulp.task('inject', ['wiredep', 'styles'], function () {
+gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function () {
     log('Wire up our css into the html and call wiredep');
 
     return gulp
@@ -107,9 +107,9 @@ gulp.task('fonts', ['clean-fonts'], function () {
 });
 
 gulp.task('clean-fonts', function (cb) {
-    log('Cleaing fonts folder');
+    log('Cleaing fonts');
 
-    var files = [config.build + 'fonts/'];
+    var files = [config.build + 'fonts/**/*.*'];
     clean(files, cb);
 });
 
@@ -126,9 +126,9 @@ gulp.task('images', ['clean-images'], function () {
 });
 
 gulp.task('clean-images', function (cb) {
-    log('Cleaing images folder');
+    log('Cleaing images');
 
-    var files = [config.build + 'images/'];
+    var files = [config.build + 'images/**/*.*'];
     clean(files, cb);
 });
 
@@ -173,13 +173,20 @@ gulp.task('clean-templatecache', function (cb) {
     clean(files, cb);
 });
 
-gulp.task('optimize', ['inject', 'templatecache'], function () {
+gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
     log('Optimizing the js, css, html and inject them on the build index');
 
     var templateCache = config.tmp + config.templateCache.file;
 
     var assets = $.useref.assets({
         searchPath: './'
+    });
+
+    var cssFilter = $.filter('**/*.css', {
+        restore: true
+    });
+    var jsFilter = $.filter('**/*.js', {
+        restore: true
     });
 
     return gulp
@@ -191,6 +198,12 @@ gulp.task('optimize', ['inject', 'templatecache'], function () {
             starttag: '<!--    inject:templates:js   -->'
         }))
         .pipe(assets)
+        .pipe(cssFilter)
+        .pipe($.csso())
+        .pipe(cssFilter.restore)
+        .pipe(jsFilter)
+        .pipe($.uglify())
+        .pipe(jsFilter.restore)
         .pipe(assets.restore())
         .pipe($.useref())
         .pipe(gulp.dest(config.build));
