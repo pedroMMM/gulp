@@ -1,5 +1,7 @@
 module.exports = function () {
 
+    var root = './';
+
     var client = './src/client/';
 
     var clientApp = client + 'app/';
@@ -13,6 +15,8 @@ module.exports = function () {
         /*
         File Paths
         */
+
+        root: root,
 
         tmp: tmp,
 
@@ -72,6 +76,11 @@ module.exports = function () {
             directory: ('./bower_components/'),
             ignorePath: '../..'
         },
+
+        packages: [
+            './package.json',
+            './bower.json'
+        ],
 
         /*
         Node settings

@@ -220,6 +220,30 @@ gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
         .pipe(gulp.dest(config.build));
 });
 
+gulp.task('bump', function () {
+    var msg = 'Bumping versions';
+    var type = args.type;
+    var version = args.version;
+    var options = {};
+
+    if (version) {
+        options.version = version;
+        msg += ' to ' + version;
+    } else {
+        options.type = type;
+        msg += ' for a ' + type;
+    }
+
+    log(msg);
+
+    return gulp
+        .src(config.packages)
+        .pipe($.plumber())
+        .pipe($.print())
+        .pipe($.bump(options))
+        .pipe(gulp.dest(config.root));
+});
+
 /*
  * Generic methods
  */
