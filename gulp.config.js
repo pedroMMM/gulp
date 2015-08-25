@@ -124,7 +124,7 @@ module.exports = function () {
 
     };
 
-    config.getDefaultWiredepOptions = getDefaultWiredepOptions();
+    config.getDefaultWiredepOptions = getDefaultWiredepOptions;
 
     config.karma = getKarmaOptions();
 

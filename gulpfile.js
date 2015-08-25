@@ -173,7 +173,7 @@ gulp.task('clean-templatecache', function (cb) {
     clean(files, cb);
 });
 
-gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
+gulp.task('optimize', ['inject', 'test'], function () {
     log('Optimizing the js, css, html and inject them on the build index');
 
     var templateCache = config.tmp + config.templateCache.file;
@@ -244,8 +244,29 @@ gulp.task('bump', function () {
         .pipe(gulp.dest(config.root));
 });
 
-gulp.task('test', ['vet', 'templatecache'], function (cb) {
+gulp.task('test', ['vet', 'templatecache', 'clean-test'], function (cb) {
     startTests(true, cb);
+});
+
+gulp.task('clean-test', function (cb) {
+    log('Cleaing report folder');
+
+    var files = [config.report + '**/*.*'];
+    clean(files, cb);
+});
+
+gulp.task('build', ['optimize', 'images', 'fonts'], function () {
+    log('Building everything');
+
+    var msg = {
+        title: 'gulp build',
+        subtitle: 'Deployed to the build folder',
+        message: 'Running "gulp serve-build"'
+    };
+
+    log(msg);
+
+    //    notify(msg);
 });
 
 /*
