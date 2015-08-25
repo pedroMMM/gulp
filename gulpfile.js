@@ -151,9 +151,7 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('templatecache', ['clean-templatecache'], function () {
-    log('Creating AngularJS $templateCache and inject it into the html');
-
-
+    log('Creating AngularJS $templateCache');
 
     return gulp
         .src(config.htmltemplates)
@@ -175,8 +173,8 @@ gulp.task('clean-templatecache', function (cb) {
     clean(files, cb);
 });
 
-gulp.task('optimize', ['inject', 'templatecache'], function () {
-    log('Optimizing the js, css and html');
+gulp.task('optimize', ['clean', 'inject', 'templatecache'], function () {
+    log('Optimizing the js, css, html and inject them on the build index');
 
     var templateCache = config.tmp + config.templateCache.file;
 
