@@ -244,9 +244,41 @@ gulp.task('bump', function () {
         .pipe(gulp.dest(config.root));
 });
 
+gulp.task('test', ['vet', 'templatecache'], function (cb) {
+    startTests(true, cb);
+});
+
 /*
  * Generic methods
  */
+
+function startTests(singleRun, cb) {
+    var karma = require('karma').server;
+    var serverSpecs = config.serverIntegrationSpecs;
+    var excludeFiles = serverSpecs;
+
+    var options = {
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
+    };
+
+    console.log(options);
+
+    karma.start(options, karmaCompleted);
+
+    //    karma = new Server(options, [karmaCompleted]);
+    //    karma.start();
+
+    function karmaCompleted(karmaResult) {
+        log('karma completed!');
+        if (karmaResult === 1) {
+            cb('karma: tests failed with code ' + karmaResult);
+        } else {
+            cb();
+        }
+    }
+}
 
 function serve(isDev) {
 

@@ -10,6 +10,14 @@ module.exports = function () {
 
     var tmp = './tmp/';
 
+    var report = './report/';
+
+    var wiredep = require('wiredep');
+
+    var bowerFiles = wiredep({
+        devDependencies: true
+    })['js'];
+
     var config = {
 
         /*
@@ -53,6 +61,8 @@ module.exports = function () {
         index: client + 'index.html',
 
         server: server,
+
+        report: report,
 
         html: clientApp + '**/*.html',
 
@@ -102,18 +112,65 @@ module.exports = function () {
                 strandAlone: false,
                 root: 'app/'
             }
-        }
+        },
+
+        /*
+        Karma and testing settings
+        */
+
+        specHelpers: [client + 'test-helpers/*.js'],
+
+        serverIntegrationSpecs: [client + 'tests/server-integration/**/*.spec.js']
 
     };
 
-    config.getDefaultWiredepOptions = function () {
+    config.getDefaultWiredepOptions = getDefaultWiredepOptions();
+
+    config.karma = getKarmaOptions();
+
+    return config;
+
+    function getDefaultWiredepOptions() {
         var options = {
             bowerJson: config.bower.json,
             directory: config.bower.directory,
             ignorePath: config.bower.ignorePath
         };
         return options;
-    };
+    }
 
-    return config;
+    function getKarmaOptions() {
+        var options = {
+            files: [].concat(
+                bowerFiles,
+                config.specHelpers,
+                client + '**/*.module.js',
+                client + '**/*.js',
+                tmp + config.templateCache.file,
+                config.serverIntegrationSpecs
+            ),
+            exclude: [],
+            coverage: {
+                dir: report + 'coverage',
+                reporters: [
+                    {
+                        type: 'html',
+                        subdir: 'report-html'
+                    },
+                    {
+                        type: 'lcov',
+                        subdir: 'report-lcov'
+                    },
+                    {
+                        type: 'text-summary'
+                    }
+                ]
+            },
+            preprocessors: {}
+        };
+
+        options.preprocessors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
+
+        return options;
+    }
 };
