@@ -50,7 +50,7 @@ module.exports = function () {
 
         server: server,
 
-        html: client + '**/*.html',
+        html: clientApp + '**/*.html',
 
         htmltemplates: clientApp + '**/*.html',
 
@@ -72,7 +72,7 @@ module.exports = function () {
 
         nodeServer: server + 'app.js',
 
-        browserReloadDelay: 1000,
+        browserReloadDelay: 2000,
 
         /*
         template cache

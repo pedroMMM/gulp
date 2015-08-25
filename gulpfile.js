@@ -173,7 +173,7 @@ gulp.task('clean-templatecache', function (cb) {
     clean(files, cb);
 });
 
-gulp.task('optimize', ['clean', 'inject', 'templatecache'], function () {
+gulp.task('optimize', ['inject', 'templatecache'], function () {
     log('Optimizing the js, css, html and inject them on the build index');
 
     var templateCache = config.tmp + config.templateCache.file;
@@ -262,13 +262,19 @@ function startBrowserSync(isDev) {
 
         var dependencies = [
             'optimize',
-            browserSync.reload
+            browserSync.reload()
         ];
 
-        gulp.watch(watch, dependencies)
-            .on('change', function (event) {
-                changeEvent(event);
-            });
+        gulp.watch([
+            config.less,
+            config.js,
+            config.html
+        ], [
+            'optimize',
+            browserSync.reload
+        ]).on('change', function (event) {
+            changeEvent(event);
+        });
     }
 
     var options = {
@@ -291,8 +297,9 @@ function startBrowserSync(isDev) {
         logLevel: 'debug',
         logPrefix: 'gulp-patterns',
         notify: true,
-        reloadDelay: 2000,
-        browser: ['chrome', 'google chrome'],
+        reloadDelay: 1000,
+        /*browser: [win->'chrome', mac->'google chrome'],*/
+        browser: ['chrome'],
         open: true
     };
 
