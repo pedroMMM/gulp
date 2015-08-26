@@ -290,13 +290,17 @@ function startTests(singleRun, cb) {
         singleRun: !!singleRun
     };
 
-    karma.start(options, karmaCompleted);
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
+    }, karmaCompleted);
 
     //    karma = new Server(options, [karmaCompleted]);
     //    karma.start();
 
     function karmaCompleted(karmaResult) {
-        log('karma completed!');
+        log('Karma completed!');
         if (karmaResult === 1) {
             cb('karma: tests failed with code ' + karmaResult);
         } else {
