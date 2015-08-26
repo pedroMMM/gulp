@@ -3,6 +3,8 @@ var args = require('yargs').argv;
 var browserSync = require('browser-Sync');
 var config = require('./gulp.config')();
 var del = require('del');
+var path = require('path');
+var _ = require('lodash');
 var wiredep = require('wiredep').stream;
 var port = process.env.PORT || config.defaultPort;
 var $ = require('gulp-load-plugins')({
@@ -93,7 +95,7 @@ gulp.task('serve-dev', ['inject'], function () {
     serve(true);
 });
 
-gulp.task('serve-build', ['optimize'], function () {
+gulp.task('serve-build', ['build'], function () {
     serve(false);
 });
 
@@ -264,9 +266,9 @@ gulp.task('build', ['optimize', 'images', 'fonts'], function () {
         message: 'Running "gulp serve-build"'
     };
 
+    del(config.tmp);
     log(msg);
-
-    //    notify(msg);
+    notify(msg);
 });
 
 /*
@@ -339,6 +341,17 @@ function serve(isDev) {
 function changeEvent(event) {
     var srcPattern = new RegExp('/.*(?=/' + config.source + ')/');
     log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
+}
+
+function notify(options) {
+    var notifier = require('node-notifier');
+    var notifyOptions = {
+        sound: 'Bottle',
+        contentImage: path.join(__dirname, 'gulp.png'),
+        icon: path.join(__dirname, 'gulp.png')
+    };
+    _.assign(notifyOptions, options);
+    notifier.notify(notifyOptions);
 }
 
 function startBrowserSync(isDev) {

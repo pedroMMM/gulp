@@ -153,10 +153,10 @@ module.exports = function () {
             coverage: {
                 dir: report + 'coverage',
                 reporters: [
-                    {
-                        type: 'html',
-                        subdir: 'report-html'
-                    },
+//                    {
+//                        type: 'html',
+//                        subdir: 'report-html'
+//                    },
                     {
                         type: 'lcov',
                         subdir: 'report-lcov'
