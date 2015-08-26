@@ -14,6 +14,8 @@ module.exports = function () {
 
     var wiredep = require('wiredep');
 
+    var specRunnerFile = 'specs.html';
+
     var bowerFiles = wiredep({
         devDependencies: true
     })['js'];
@@ -118,9 +120,22 @@ module.exports = function () {
         Karma and testing settings
         */
 
-        specHelpers: [client + 'test-helpers/*.js'],
+        specs: clientApp + '**/*.spec.js',
 
-        serverIntegrationSpecs: [client + 'tests/server-integration/**/*.spec.js']
+        specHelpers: client + 'test-helpers/*.js',
+
+        serverIntegrationSpecs: [client + 'tests/server-integration/**/*.spec.js'],
+
+        specRunner: client + specRunnerFile,
+
+        specRunnerFile: specRunnerFile,
+
+        testLibraties: [
+            './node_modules/mocha/mocha.js',
+            './node_modules/chai/chai.js',
+            './node_modules/mocha-clean/index.js',
+            './node_modules/sinon-chai/lib/sinon-chai.js'
+        ]
 
     };
 

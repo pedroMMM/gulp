@@ -275,6 +275,35 @@ gulp.task('build', ['optimize', 'images', 'fonts'], function () {
     notify(msg);
 });
 
+gulp.task('build-specs', ['templatecache'], function () {
+    log('Building the spec runner');
+
+    var options = config.getDefaultWiredepOptions();
+
+    return gulp
+        .src(config.specRunner)
+        .pipe($.plumber())
+        .pipe(wiredep(options))
+        .pipe($.inject(gulp.src(config.testLibraties), {
+            name: 'inject:testlibraries',
+            read: false
+        }))
+        .pipe($.inject(gulp.src(config.js)))
+        .pipe($.inject(gulp.src(config.specHelpers), {
+            name: 'inject:specHelpers',
+            read: false
+        }))
+        .pipe($.inject(gulp.src(config.specs), {
+            name: 'inject:specs',
+            read: false
+        }))
+        .pipe($.inject(gulp.src(config.tmp + config.templateCache.file), {
+            name: 'inject:templates',
+            read: false
+        }))
+        .pipe(gulp.dest(config.client));
+});
+
 /*
  * Generic methods
  */
