@@ -250,6 +250,10 @@ gulp.task('test', ['vet', 'templatecache', 'clean-test'], function (cb) {
     startTests(true, cb);
 });
 
+gulp.task('auto-test', ['vet', 'templatecache', 'clean-test'], function (cb) {
+    startTests(false, cb);
+});
+
 gulp.task('clean-test', function (cb) {
     log('Cleaing report folder');
 
