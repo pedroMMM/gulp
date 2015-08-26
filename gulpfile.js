@@ -290,8 +290,6 @@ function startTests(singleRun, cb) {
         singleRun: !!singleRun
     };
 
-    console.log(options);
-
     karma.start(options, karmaCompleted);
 
     //    karma = new Server(options, [karmaCompleted]);

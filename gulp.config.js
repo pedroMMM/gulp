@@ -144,8 +144,8 @@ module.exports = function () {
             files: [].concat(
                 bowerFiles,
                 config.specHelpers,
-                client + '**/*.module.js',
-                client + '**/*.js',
+                clientApp + '**/*.module.js',
+                clientApp + '**/*.js',
                 tmp + config.templateCache.file,
                 config.serverIntegrationSpecs
             ),
@@ -153,10 +153,10 @@ module.exports = function () {
             coverage: {
                 dir: report + 'coverage',
                 reporters: [
-//                    {
-//                        type: 'html',
-//                        subdir: 'report-html'
-//                    },
+                    {
+                        type: 'html',
+                        subdir: 'report-html'
+                    },
                     {
                         type: 'lcov',
                         subdir: 'report-lcov'
