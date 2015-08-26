@@ -146,9 +146,9 @@ gulp.task('clean-code', function (cb) {
 });
 
 gulp.task('clean', function (cb) {
-    log('Cleaing build and tmp folders');
+    log('Cleaing build, tmp and report folders');
 
-    var files = [].concat(config.build, config.tmp);
+    var files = [].concat(config.build, config.tmp, config.report);
     clean(files, cb);
 });
 
