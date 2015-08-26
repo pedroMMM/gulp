@@ -279,6 +279,7 @@ gulp.task('build-specs', ['templatecache'], function () {
     log('Building the spec runner');
 
     var options = config.getDefaultWiredepOptions();
+    options.devDependencies = true;
 
     return gulp
         .src(config.specRunner)
@@ -302,6 +303,12 @@ gulp.task('build-specs', ['templatecache'], function () {
             read: false
         }))
         .pipe(gulp.dest(config.client));
+});
+
+gulp.task('serve-specs', ['build-specs'], function (cb) {
+    log('Running the spec runner');
+    serve(true, true);
+    cb();
 });
 
 /*
@@ -338,7 +345,7 @@ function startTests(singleRun, cb) {
     }
 }
 
-function serve(isDev) {
+function serve(isDev, specRunner) {
 
     var nodeOptions = {
         script: config.nodeServer,
@@ -363,7 +370,7 @@ function serve(isDev) {
         })
         .on('start', function () {
             log('*** nodemon started');
-            startBrowserSync(isDev);
+            startBrowserSync(isDev, specRunner);
         })
         .on('crash', function () {
             log('*** nodemon crached');
@@ -389,7 +396,7 @@ function notify(options) {
     notifier.notify(notifyOptions);
 }
 
-function startBrowserSync(isDev) {
+function startBrowserSync(isDev, specRunner) {
     if (args.nosync || browserSync.active) {
         return;
     }
@@ -448,9 +455,13 @@ function startBrowserSync(isDev) {
         notify: true,
         reloadDelay: 1000,
         /*browser: [win->'chrome', mac->'google chrome'],*/
-        browser: ['chrome'],
+        browser: ['google chrome'],
         open: true
     };
+
+    if (specRunner) {
+        options.startPath = config.specRunnerFile;
+    }
 
     browserSync(options);
 }
